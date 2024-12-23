@@ -1,40 +1,22 @@
 import { useState } from "react";
+import { submitResumeData } from "../../services/templateServices";
+import {
+  Education,
+  Experience,
+  Project,
+  ResumeData,
+} from "../../utlis/types/commonTypes";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
 type FieldValue = string | boolean | null;
-
-interface Experience {
-  title: string;
-  description: string;
-  startDate: string | null;
-  endDate: string | null;
-  currentlyWorking: boolean;
-}
-
-interface Education {
-  school: string;
-  degree: string;
-  startDate: string | null;
-  endDate: string | null;
-  currentlyWorking: boolean;
-  cgpa?: number;
-}
-
-interface Project {
-  title: string;
-  description: string;
-  startDate: string | null;
-  endDate: string | null;
-  currentlyWorking: boolean;
-  link: string;
-  technologies: string;
-}
 
 function isCurrentlyWorkingField(field: string): field is "currentlyWorking" {
   return field === "currentlyWorking";
 }
 
 function TemplateEditor() {
-  const [resume, setResume] = useState({
+  const [resume, setResume] = useState<ResumeData>({
     name: "",
     email: "",
     number: "",
@@ -73,6 +55,7 @@ function TemplateEditor() {
       technologies: "",
     },
   ]);
+  const userData = useSelector((state: RootState) => state.auth);
 
   // Add new experience
   const handleAddExperience = () => {
@@ -194,8 +177,21 @@ function TemplateEditor() {
     });
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await submitResumeData(
+      resume,
+      summary,
+      projects,
+      skills,
+      experience,
+      education,
+      userData.token
+    );
+  };
+
   return (
-    <div className="bg-white h-full w-full max-w-4xl mx-auto p-4">
+    <div className="bg-white flex flex-col  h-full w-full max-w-4xl mx-auto p-4">
       {/* Personal Information Section */}
       <div className="space-y-4">
         <input
@@ -615,6 +611,12 @@ function TemplateEditor() {
           </div>
         ))}
       </div>
+      <button
+        className="bg-blue-500 text-white px-4 py-2 hover:bg-blue-900 rounded self-center mt-10"
+        onClick={handleSubmit}
+      >
+        submit
+      </button>
     </div>
   );
 }
