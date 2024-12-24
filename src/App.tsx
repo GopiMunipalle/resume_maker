@@ -11,6 +11,7 @@ import {
   setUser,
 } from "./redux/slices/authSlice";
 import Templates from "./pages/Templates";
+import TemplateEditor from "./pages/TemplateEditor";
 
 function App() {
   const dispatch: AppDispatch = useDispatch();
@@ -18,9 +19,8 @@ function App() {
 
   useEffect(() => {
     const initializeState = async () => {
-      const data = await initializeData(); // Initialize data from localStorage
+      const data = await initializeData();
       if (data && data.token) {
-        // Check if user data exists
         dispatch(
           setUser({
             id: data.id,
@@ -36,7 +36,7 @@ function App() {
           })
         );
       } else {
-        dispatch(setUser({ ...initialState, isLoggedIn: false })); // Handle logged-out state
+        dispatch(setUser({ ...initialState, isLoggedIn: false }));
       }
       setLoading(false);
     };
@@ -54,6 +54,7 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/home" element={<Home />} />
       <Route path="/templates" element={<Templates />} />
+      <Route path="/create-resume" element={<TemplateEditor />} />
     </Routes>
   );
 }

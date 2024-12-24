@@ -1,32 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { loginPage } from "../../constants/commontext";
 import { IoMdEyeOff, IoIosEye } from "react-icons/io";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../redux/store";
-import { AuthState, loginUser } from "../../redux/slices/authSlice";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../redux/store";
+import { loginUser } from "../../redux/slices/authSlice";
 import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const dispatch: AppDispatch = useDispatch();
-  const { isLoggedIn, error } = useSelector(
-    (state: RootState) => state.auth as AuthState
-  );
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      navigate("/home", { replace: true });
-    }
-  }, [isLoggedIn, navigate]);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
-    await dispatch(loginUser({ email, password }));
+    const result = await dispatch(loginUser({ email, password })).unwrap();
+    if (result.token) {
+      navigate("/home");
+    } else {
+      setError(result.error);
+    }
   }
 
   return (
@@ -74,12 +71,10 @@ function Login() {
           </button>
         </div>
 
-        <button className="bg-blue-500 text-white py-2 px-4 rounded mt-5 hover:bg-green-600 outline-none focus:outline-none focus:border-lime-400">
+        {error && <div className="text-red-700 text-md mt-5">{error}</div>}
+        <button className="bg-blue-500 text-white py-2 px-4 rounded mt-1 hover:bg-green-600 outline-none focus:outline-none focus:border-lime-400">
           {loginPage.button}
         </button>
-
-        {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
-
         <Link
           to={loginPage.linkTo}
           className="text-md text-gray-500 font-light mt-5"

@@ -1,5 +1,7 @@
 import { apiConfig } from "../config/apiConfig";
 import {
+  AwardsData,
+  CeritificatesData,
   Education,
   Experience,
   Project,
@@ -13,6 +15,9 @@ export const submitResumeData = async (
   skills: string[],
   experience: Experience[],
   education: Education[],
+  awards: AwardsData[],
+  ceritificates: CeritificatesData[],
+  userId: number,
   token: string
 ) => {
   try {
@@ -26,6 +31,9 @@ export const submitResumeData = async (
         skills: skills,
         summary: summary,
         resume: resume,
+        awards: awards,
+        certifications: ceritificates,
+        userId: userId,
       }),
     });
     const result = await response.json();
@@ -35,5 +43,24 @@ export const submitResumeData = async (
     return result;
   } catch (error: any) {
     return error.message;
+  }
+};
+
+export const getAllResumes = async (token: string) => {
+  try {
+    const response = await fetch(apiConfig.allResumes, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: token,
+      },
+    });
+    const result = await response.json();
+    if (!response.ok) {
+      return { status: false, message: result.message };
+    }
+    return { status: true, data: result[0].resumes };
+  } catch (error: any) {
+    return { status: false, message: error.message };
   }
 };

@@ -62,7 +62,6 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action: PayloadAction<AuthState>) => {
-      console.log("action.payload setuser", action.payload);
       state.id = action.payload.id;
       state.name = action.payload.name;
       state.email = action.payload.email;
@@ -72,7 +71,6 @@ const authSlice = createSlice({
       state.createdAt = action.payload.createdAt;
       state.updatedAt = action.payload.updatedAt;
 
-      // Persist to localStorage
       localStorage.setItem("user", JSON.stringify(state));
     },
     logout: (state) => {
@@ -87,7 +85,6 @@ const authSlice = createSlice({
       state.createdAt = null;
       state.updatedAt = null;
 
-      // Remove from localStorage on logout
       localStorage.removeItem("user");
     },
   },
@@ -113,7 +110,6 @@ const authSlice = createSlice({
           state.createdAt = createdAt;
           state.updatedAt = updatedAt;
 
-          // Save user to localStorage
           localStorage.setItem("user", JSON.stringify(state));
         }
       )

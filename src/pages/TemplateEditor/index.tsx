@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { submitResumeData } from "../../services/templateServices";
 import {
+  AwardsData,
+  CeritificatesData,
   Education,
   Experience,
   Project,
@@ -8,6 +10,7 @@ import {
 } from "../../utlis/types/commonTypes";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+import { useNavigate } from "react-router-dom";
 
 type FieldValue = string | boolean | null;
 
@@ -55,7 +58,11 @@ function TemplateEditor() {
       technologies: "",
     },
   ]);
+  const [awards, setAwards] = useState<AwardsData[]>([]);
+  const [ceritificates, setCeritificates] = useState<CeritificatesData[]>([]);
+  const [error, setError] = useState("");
   const userData = useSelector((state: RootState) => state.auth);
+  const navigate = useNavigate();
 
   // Add new experience
   const handleAddExperience = () => {
@@ -179,15 +186,24 @@ function TemplateEditor() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await submitResumeData(
+    const message = await submitResumeData(
       resume,
       summary,
       projects,
       skills,
       experience,
       education,
+      awards,
+      ceritificates,
+      Number(userData.id),
       userData.token
     );
+    console.log("message", message);
+    if (message.id !== undefined) {
+      navigate("/templates", { state: { id: message.id }, replace: true });
+    } else {
+      setError(message.message[0]);
+    }
   };
 
   return (
@@ -529,7 +545,7 @@ function TemplateEditor() {
               placeholder="School Title"
               value={educations.school}
               onChange={(e) =>
-                handleFieldChange(index, "title", e.target.value, "education")
+                handleFieldChange(index, "school", e.target.value, "education")
               }
               className="w-full p-2 border rounded"
             />
@@ -611,6 +627,7 @@ function TemplateEditor() {
           </div>
         ))}
       </div>
+      {error && <p className="text-red-500">{error}</p>}
       <button
         className="bg-blue-500 text-white px-4 py-2 hover:bg-blue-900 rounded self-center mt-10"
         onClick={handleSubmit}

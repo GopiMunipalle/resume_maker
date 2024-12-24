@@ -21,4 +21,4 @@ function TemplateList({ templates, onSelect }: any) {
   );
 }
 
-export default TemplateList;
+// export default TemplateList;
