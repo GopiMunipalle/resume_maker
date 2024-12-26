@@ -57,3 +57,13 @@ export interface Resume {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface User {
+  createdAt: string;
+  email: string;
+  id: number;
+  isActive: boolean;
+  name: string;
+  role: string;
+  updatedAt: string;
+}

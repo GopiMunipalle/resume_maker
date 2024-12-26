@@ -13,6 +13,7 @@ import {
 import Templates from "./pages/Templates";
 import TemplateEditor from "./pages/TemplateEditor";
 import ResumeItem from "./pages/ResumeItem";
+import StarRating from "./pages/About";
 
 function App() {
   const dispatch: AppDispatch = useDispatch();
