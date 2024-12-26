@@ -1,30 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Header from "../../components/Header";
-import { getAllResumes } from "../../services/templateServices";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
-import { Resume } from "../../utlis/types/commonTypes";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../redux/store";
 import { useNavigate } from "react-router-dom";
+import { resumesData } from "../../redux/slices/resumeSlice";
 
 function Templates() {
-  const [resumeData, setAllResumesData] = useState<Resume[] | null>([]);
+  const resumeData = useSelector((state: RootState) => state.resume.resumes);
   const userData = useSelector((state: RootState) => state.auth);
+  const dispath: AppDispatch = useDispatch();
   const navigate = useNavigate();
 
-  const getAllResumesData = async () => {
-    const result = await getAllResumes(userData.token);
-    if (result.status) {
-      setAllResumesData(result.data);
-    } else {
-      alert(result.message);
-    }
-  };
-
   useEffect(() => {
-    getAllResumesData();
-  }, []);
-
-  // console.log("resumeData", resumeData);
+    dispath(resumesData(userData.token));
+  }, [userData.token]);
 
   return (
     <div className="min-h-screen bg-gray-900 pb-10">
@@ -123,7 +112,7 @@ function Templates() {
                   ))}
                 </div>
                 <button
-                  onClick={() => navigate(`/templates/${resume.id}`)}
+                  onClick={() => navigate(`/resume/${resume.id}`)}
                   className="bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded text-sm"
                 >
                   View

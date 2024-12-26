@@ -64,3 +64,22 @@ export const getAllResumes = async (token: string) => {
     return { status: false, message: error.message };
   }
 };
+
+export const getOneResume = async (token: string, resumeId: number) => {
+  try {
+    const response = await fetch(apiConfig.getResume + resumeId, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: token,
+      },
+    });
+    const result = await response.json();
+    if (!response.ok) {
+      return { status: false, message: result.message };
+    }
+    return { status: true, data: result };
+  } catch (error: any) {
+    return { status: false, message: error.message };
+  }
+};

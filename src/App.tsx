@@ -12,6 +12,7 @@ import {
 } from "./redux/slices/authSlice";
 import Templates from "./pages/Templates";
 import TemplateEditor from "./pages/TemplateEditor";
+import ResumeItem from "./pages/ResumeItem";
 
 function App() {
   const dispatch: AppDispatch = useDispatch();
@@ -55,6 +56,7 @@ function App() {
       <Route path="/home" element={<Home />} />
       <Route path="/templates" element={<Templates />} />
       <Route path="/create-resume" element={<TemplateEditor />} />
+      <Route path="/resume/:id" element={<ResumeItem />} />
     </Routes>
   );
 }

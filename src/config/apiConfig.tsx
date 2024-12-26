@@ -5,4 +5,5 @@ export const apiConfig = {
   login: `${BASE_URL}/user/login`,
   createResume: `${BASE_URL}/resume/`,
   allResumes: `${BASE_URL}/resume/all`,
+  getResume: `${BASE_URL}/resume/`,
 };
