@@ -45,222 +45,121 @@ function ResumeItem() {
   }, [id, user.token]);
 
   const generatePDF = () => {
-    const doc = new jsPDF();
-    const margin = 10;
-    let currentY = margin; // Track the Y position on the page
+    const doc = new jsPDF({
+      orientation: "portrait",
+      unit: "in",
+    });
 
-    const addText = (
-      text: string,
-      fontSize: number,
-      lineHeight: number = 10
-    ) => {
-      doc.setFontSize(fontSize);
-      doc.text(text, margin, currentY);
-      currentY += lineHeight;
-    };
+    const pageWidth = doc.internal.pageSize.width;
 
-    const addSectionHeader = (header: string, fontSize: number) => {
-      doc.setFontSize(fontSize);
-      doc.setFont("helvetica", "bold");
-      doc.text(header, margin, currentY);
-      currentY += 8;
-      doc.setFont("helvetica", "normal");
-    };
+    // Divider color and thickness
+    doc.setDrawColor(169, 169, 169); // Light gray color for dividers
+    doc.setLineWidth(0.02);
 
-    const checkPageOverflow = (heightRequired: number) => {
-      if (currentY + heightRequired > doc.internal.pageSize.height - margin) {
-        doc.addPage();
-        currentY = margin; // Reset Y position when adding a new page
-      }
-    };
+    // Title Section (Center Aligned)
+    doc.setFontSize(20);
+    doc.setFont("helvetica", "bold");
+    doc.text("sample", pageWidth / 2, 1, { align: "center" });
 
-    // Add Title (Resume Name)
-    addText("Resume of " + resume?.user.name, 18);
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "normal");
+    doc.text(
+      `${resume?.user.email} | ${resume?.user.createdAt} | ${resume?.user.updatedAt}`,
+      pageWidth / 2,
+      1.3,
+      { align: "center" }
+    );
 
-    // Add user details (email, creation date)
-    addText(`Email: ${resume?.user.email}`, 12);
-    addText(`Created At: ${resume?.user.createdAt}`, 12);
-    addText(`Updated At: ${resume?.user.updatedAt}`, 12);
-
-    checkPageOverflow(30); // Check if the next section fits in the remaining space
+    doc.line(0.5, 1.6, pageWidth - 0.5, 1.6); // Line under header
+    let y = 1.8;
 
     // Experience Section
-    addSectionHeader("Experience", 14);
-    if (resume?.experience && resume?.experience.length > 0) {
-      const experienceData = resume.experience.map((item) => [
-        item.title,
-        `${item.startDate} - ${item.endDate || "Present"}`,
-        item.description,
-      ]);
-      let finalY: number;
-      autoTable(doc, {
-        head: [["Title", "Duration", "Description"]],
-        body: experienceData,
-        startY: currentY,
-        theme: "striped",
-        columnStyles: {
-          0: { cellWidth: 60 },
-          1: { cellWidth: 30 },
-          2: { cellWidth: 100 },
-        },
-        didDrawPage: () => {
-          checkPageOverflow(40); // Check after adding the table
-        },
-      });
-      // currentY = (autoTable as any).lastAutoTable.finalY; // Update currentY to the end of the table
-    }
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(14);
+    doc.text("Experience", 0.5, y); // Left aligned
+    y += 0.3;
 
-    checkPageOverflow(30); // Check if the next section fits in the remaining space
+    resume?.experience.forEach((item) => {
+      doc.setFont("helvetica", "bold");
+      doc.text(item.title, 0.5, y); // Job title
+      doc.setFont("helvetica", "normal");
+      doc.text(item.description, 0.5, y + 0.2); // Job description
+
+      doc.text(
+        `${item.startDate} - ${item.endDate ? item.endDate : "Present"}`,
+        pageWidth - 0.5,
+        y,
+        { align: "right" }
+      );
+
+      y += 0.6;
+    });
+
+    doc.line(0.5, y, pageWidth - 0.5, y); // Line after experience section
+    y += 0.3;
 
     // Skills Section
-    addSectionHeader("Skills", 14);
-    addText(Array(resume?.skills).join(", "), 12);
+    doc.setFont("helvetica", "bold");
+    doc.text("Skills", 0.5, y); // Left aligned
+    y += 0.3;
 
-    checkPageOverflow(20); // Check for overflow before the next section
+    doc.setFont("helvetica", "normal");
+    doc.text("Node, Javascript, React, Mongodb, Typescript, Bootstrap", 0.5, y);
+    y += 0.5;
+
+    doc.line(0.5, y, pageWidth - 0.5, y); // Line after skills section
+    y += 0.3;
 
     // Projects Section
-    addSectionHeader("Projects", 14);
-    if (resume?.projects && resume?.projects.length > 0) {
-      resume.projects.forEach((item) => {
-        addText(
-          `${item.title} (${item.startDate} - ${item.endDate || "Present"})`,
-          12
-        );
-        addText(item.description, 12);
-        addText(`Technologies: ${item.technologies}`, 12);
-        if (item.link) {
-          addText(`Link: ${item.link}`, 12);
-        }
-        checkPageOverflow(25); // Check after each project for overflow
-      });
-    }
+    doc.setFont("helvetica", "bold");
+    doc.text("Projects", 0.5, y); // Left aligned
+    y += 0.3;
 
-    checkPageOverflow(30); // Check for overflow before the next section
+    resume?.projects.forEach((item) => {
+      doc.setFont("helvetica", "bold");
+      doc.text(item.title, 0.5, y); // Project title
+      doc.setFont("helvetica", "normal");
+      doc.text(item.description, 0.5, y + 0.2); // Project description
+
+      doc.text(
+        `${item.startDate} - ${item.endDate ? item.endDate : "Present"}`,
+        pageWidth - 0.5,
+        y,
+        { align: "right" }
+      );
+
+      doc.text(`Technologies Used: ${item.technologies}`, 0.5, y + 0.4);
+
+      y += 0.8;
+    });
+
+    doc.line(0.5, y, pageWidth - 0.5, y); // Line after projects section
+    y += 0.3;
 
     // Education Section
-    addSectionHeader("Education", 14);
-    if (resume?.education && resume?.education.length > 0) {
-      const educationData = resume.education.map((item) => [
-        item.degree,
-        `${item.startDate} - ${item.endDate || "Present"}`,
-        item.school,
-        item.cgpa || "N/A",
-      ]);
-      let finalY: number;
-      autoTable(doc, {
-        head: [["Degree", "Duration", "School", "CGPA"]],
-        body: educationData,
-        startY: currentY,
-        theme: "striped",
-        columnStyles: {
-          0: { cellWidth: 60 },
-          1: { cellWidth: 30 },
-          2: { cellWidth: 50 },
-          3: { cellWidth: 20 },
-        },
-        didDrawPage: () => {
-          checkPageOverflow(40); // Check after adding the table
-        },
-      });
-      // currentY = (autoTable as any).lastAutoTable.finalY; // Update currentY to the end of the table
-    }
+    doc.setFont("helvetica", "bold");
+    doc.text("Education", 0.5, y); // Left aligned
+    y += 0.3;
 
-    // Save the PDF
+    resume?.education.forEach((item) => {
+      doc.setFont("helvetica", "bold");
+      doc.text(item.degree, 0.5, y); // Degree
+      doc.setFont("helvetica", "normal");
+      doc.text(item.school, 0.5, y + 0.2); // School name
+
+      doc.text(
+        `${item.startDate} - ${item.endDate ? item.endDate : "Present"}`,
+        pageWidth - 0.5,
+        y,
+        { align: "right" }
+      );
+
+      y += 0.6;
+    });
+
+    // Save the generated PDF
     doc.save("resume.pdf");
   };
-  // const generatePDF = () => {
-  //   const doc = new jsPDF();
-  //   const margin = 10;
-  //   const pageWidth = doc.internal.pageSize.width;
-  //   const pageHeight = doc.internal.pageSize.height;
-
-  //   // Add Title (Resume Name)
-  //   doc.setFontSize(18);
-  //   doc.text("Resume of " + resume?.user.name, margin, margin + 10);
-
-  //   // Add user details (email, creation date, etc.)
-  //   doc.setFontSize(12);
-  //   doc.text(`Email: ${resume?.user.email}`, margin, margin + 20);
-  //   doc.text(`Created At: ${resume?.user.createdAt}`, margin, margin + 25);
-  //   doc.text(`Updated At: ${resume?.user.updatedAt}`, margin, margin + 30);
-
-  //   doc.addPage(); // Move to the next page for Experience
-
-  //   // Experience Section (using jsPDF autoTable for a table)
-  //   if (resume?.experience && resume?.experience.length > 0) {
-  //     doc.text("Experience", margin, margin + 10);
-  //     const experienceData = resume.experience.map((item) => [
-  //       item.title,
-  //       `${item.startDate} - ${item.endDate || "Present"}`,
-  //       item.description,
-  //     ]);
-  //     autoTable(doc, {
-  //       head: [["Title", "Duration", "Description"]],
-  //       body: experienceData,
-  //       startY: margin + 15,
-  //       theme: "striped",
-  //       columnStyles: {
-  //         0: { cellWidth: 60 },
-  //         1: { cellWidth: 30 },
-  //         2: { cellWidth: 100 },
-  //       },
-  //     });
-  //   }
-
-  //   // Skills Section
-  //   // doc.addPage();
-  //   doc.text("Skills", margin, margin + 10);
-  //   doc.text(Array(resume?.skills).join(", "), margin, margin + 20);
-
-  //   // Projects Section
-  //   // doc.addPage();
-  //   if (resume?.projects && resume?.projects.length > 0) {
-  //     doc.text("Projects", margin, margin + 10);
-  //     resume.projects.forEach((item, index) => {
-  //       doc.text(
-  //         `${item.title} (${item.startDate} - ${item.endDate || "Present"})`,
-  //         margin,
-  //         margin + 15 + index * 8
-  //       );
-  //       doc.text(item.description, margin, margin + 20 + index * 8);
-  //       doc.text(
-  //         `Technologies: ${item.technologies}`,
-  //         margin,
-  //         margin + 25 + index * 8
-  //       );
-  //       if (item.link) {
-  //         doc.text(`Link: ${item.link}`, margin, margin + 30 + index * 8);
-  //       }
-  //     });
-  //   }
-
-  //   // Education Section
-  //   doc.addPage();
-  //   if (resume?.education && resume?.education.length > 0) {
-  //     doc.text("Education", margin, margin + 10);
-  //     const educationData = resume.education.map((item) => [
-  //       item.degree,
-  //       `${item.startDate} - ${item.endDate || "Present"}`,
-  //       item.school,
-  //       item.cgpa || "N/A",
-  //     ]);
-  //     autoTable(doc, {
-  //       head: [["Degree", "Duration", "School", "CGPA"]],
-  //       body: educationData,
-  //       startY: margin + 15,
-  //       theme: "striped",
-  //       columnStyles: {
-  //         0: { cellWidth: 60 },
-  //         1: { cellWidth: 30 },
-  //         2: { cellWidth: 50 },
-  //         3: { cellWidth: 20 },
-  //       },
-  //     });
-  //   }
-
-  //   // Save the PDF
-  //   doc.save("resume.pdf");
-  // };
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-gray-900 p-6">
