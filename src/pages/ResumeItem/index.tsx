@@ -51,39 +51,54 @@ function ResumeItem() {
     });
 
     const pageWidth = doc.internal.pageSize.width;
+    const pageHeight = doc.internal.pageSize.height;
 
-    // Divider color and thickness
-    doc.setDrawColor(169, 169, 169); // Light gray color for dividers
+    let y = 0.5;
+
+    const maxWidth = pageWidth - 1;
+
+    const checkPageOverflow = (requiredSpace: number) => {
+      if (y + requiredSpace > pageHeight - 0.5) {
+        doc.addPage();
+        y = 0.5;
+      }
+    };
+
+    doc.setDrawColor(169, 169, 169);
     doc.setLineWidth(0.02);
 
-    // Title Section (Center Aligned)
     doc.setFontSize(20);
     doc.setFont("helvetica", "bold");
-    doc.text("sample", pageWidth / 2, 1, { align: "center" });
+    doc.text("sample", pageWidth / 2, y, { align: "center" });
+    y += 0.3;
 
     doc.setFontSize(12);
     doc.setFont("helvetica", "normal");
     doc.text(
       `${resume?.user.email} | ${resume?.user.createdAt} | ${resume?.user.updatedAt}`,
       pageWidth / 2,
-      1.3,
+      y,
       { align: "center" }
     );
+    y += 0.3;
 
-    doc.line(0.5, 1.6, pageWidth - 0.5, 1.6); // Line under header
-    let y = 1.8;
+    doc.line(0.5, y, pageWidth - 0.5, y);
+    y += 0.3;
 
-    // Experience Section
     doc.setFont("helvetica", "bold");
     doc.setFontSize(14);
-    doc.text("Experience", 0.5, y); // Left aligned
+    doc.text("Experience", 0.5, y);
     y += 0.3;
 
     resume?.experience.forEach((item) => {
+      checkPageOverflow(0.8);
+
       doc.setFont("helvetica", "bold");
-      doc.text(item.title, 0.5, y); // Job title
+      doc.text(item.title, 0.5, y);
       doc.setFont("helvetica", "normal");
-      doc.text(item.description, 0.5, y + 0.2); // Job description
+
+      const lines = doc.splitTextToSize(item.description, maxWidth);
+      doc.text(lines, 0.5, y + 0.2);
 
       doc.text(
         `${item.startDate} - ${item.endDate ? item.endDate : "Present"}`,
@@ -92,34 +107,36 @@ function ResumeItem() {
         { align: "right" }
       );
 
-      y += 0.6;
+      y += lines.length * 0.3 + 0.3;
     });
 
-    doc.line(0.5, y, pageWidth - 0.5, y); // Line after experience section
+    doc.line(0.5, y, pageWidth - 0.5, y);
     y += 0.3;
 
-    // Skills Section
     doc.setFont("helvetica", "bold");
-    doc.text("Skills", 0.5, y); // Left aligned
+    doc.text("Skills", 0.5, y);
     y += 0.3;
 
     doc.setFont("helvetica", "normal");
-    doc.text("Node, Javascript, React, Mongodb, Typescript, Bootstrap", 0.5, y);
+    doc.text(String(resume?.skills), 0.5, y);
     y += 0.5;
 
-    doc.line(0.5, y, pageWidth - 0.5, y); // Line after skills section
+    doc.line(0.5, y, pageWidth - 0.5, y);
     y += 0.3;
 
-    // Projects Section
     doc.setFont("helvetica", "bold");
-    doc.text("Projects", 0.5, y); // Left aligned
+    doc.text("Projects", 0.5, y);
     y += 0.3;
 
     resume?.projects.forEach((item) => {
+      checkPageOverflow(0.8);
+
       doc.setFont("helvetica", "bold");
-      doc.text(item.title, 0.5, y); // Project title
+      doc.text(item.title, 0.5, y);
       doc.setFont("helvetica", "normal");
-      doc.text(item.description, 0.5, y + 0.2); // Project description
+
+      const lines = doc.splitTextToSize(item.description, maxWidth);
+      doc.text(lines, 0.5, y + 0.2);
 
       doc.text(
         `${item.startDate} - ${item.endDate ? item.endDate : "Present"}`,
@@ -127,25 +144,26 @@ function ResumeItem() {
         y,
         { align: "right" }
       );
-
+      y += lines.length * 0.2;
       doc.text(`Technologies Used: ${item.technologies}`, 0.5, y + 0.4);
 
-      y += 0.8;
+      y += lines.length * 0.3 + 0.4;
     });
 
-    doc.line(0.5, y, pageWidth - 0.5, y); // Line after projects section
+    doc.line(0.5, y, pageWidth - 0.5, y);
     y += 0.3;
 
-    // Education Section
     doc.setFont("helvetica", "bold");
-    doc.text("Education", 0.5, y); // Left aligned
+    doc.text("Education", 0.5, y);
     y += 0.3;
 
     resume?.education.forEach((item) => {
+      checkPageOverflow(0.8);
+
       doc.setFont("helvetica", "bold");
-      doc.text(item.degree, 0.5, y); // Degree
+      doc.text(item.degree, 0.5, y);
       doc.setFont("helvetica", "normal");
-      doc.text(item.school, 0.5, y + 0.2); // School name
+      doc.text(item.school, 0.5, y + 0.2);
 
       doc.text(
         `${item.startDate} - ${item.endDate ? item.endDate : "Present"}`,
@@ -157,7 +175,6 @@ function ResumeItem() {
       y += 0.6;
     });
 
-    // Save the generated PDF
     doc.save("resume.pdf");
   };
 
