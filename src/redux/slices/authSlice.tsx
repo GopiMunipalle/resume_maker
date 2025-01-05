@@ -5,6 +5,10 @@ export interface AuthState {
   id: string | null;
   name: string;
   email: string;
+  number: string;
+  linkedinUrl: string;
+  githubUrl: string;
+  profilePicture: string;
   role: string;
   token: string;
   isLoggedIn: boolean;
@@ -20,6 +24,10 @@ export const initialState: AuthState = {
   email: "",
   role: "",
   token: "",
+  number: "",
+  linkedinUrl: "",
+  githubUrl: "",
+  profilePicture: "",
   isLoggedIn: false,
   error: null,
   isLoading: false,
@@ -67,6 +75,10 @@ const authSlice = createSlice({
       state.email = action.payload.email;
       state.role = action.payload.role;
       state.token = action.payload.token;
+      state.linkedinUrl = action.payload.linkedinUrl;
+      state.githubUrl = action.payload.githubUrl;
+      state.number = action.payload.number;
+      state.profilePicture = action.payload.profilePicture;
       state.isLoggedIn = true;
       state.createdAt = action.payload.createdAt;
       state.updatedAt = action.payload.updatedAt;
@@ -79,6 +91,10 @@ const authSlice = createSlice({
       state.email = "";
       state.role = "";
       state.token = "";
+      state.githubUrl = "";
+      (state.linkedinUrl = ""),
+        (state.number = ""),
+        (state.profilePicture = "");
       state.isLoggedIn = false;
       state.error = null;
       state.isLoading = false;
@@ -97,13 +113,28 @@ const authSlice = createSlice({
       .addCase(
         loginUser.fulfilled,
         (state, action: PayloadAction<AuthState>) => {
-          const { id, name, email, role, token, createdAt, updatedAt } =
-            action.payload;
+          const {
+            id,
+            name,
+            email,
+            role,
+            token,
+            createdAt,
+            updatedAt,
+            number,
+            linkedinUrl,
+            githubUrl,
+            profilePicture,
+          } = action.payload;
           state.id = id;
           state.name = name;
           state.email = email;
           state.role = role;
           state.token = token;
+          state.number = number;
+          state.linkedinUrl = linkedinUrl;
+          state.githubUrl = githubUrl;
+          state.profilePicture = profilePicture;
           state.isLoggedIn = true;
           state.isLoading = false;
           state.error = null;

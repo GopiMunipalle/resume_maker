@@ -4,17 +4,16 @@ import {
   Education,
   Experience,
   Project,
-  Resume,
   User,
 } from "../../utlis/types/commonTypes";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { getOneResume } from "../../services/templateServices";
 import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
 import "jspdf-autotable";
 
 export interface Data {
+  summary: string;
   awards: any[];
   certifications: any[];
   createdAt: string;
@@ -75,7 +74,7 @@ function ResumeItem() {
     doc.setFontSize(12);
     doc.setFont("helvetica", "normal");
     doc.text(
-      `${resume?.user.email} | ${resume?.user.createdAt} | ${resume?.user.updatedAt}`,
+      `${resume?.user.email} | ${resume?.user.number} | ${resume?.user.githubUrl} | ${resume?.user.linkedinUrl}`,
       pageWidth / 2,
       y,
       { align: "center" }
@@ -188,10 +187,13 @@ function ResumeItem() {
               {resume?.user.email}
             </p>
             <p className="font-small border-r-2 pr-2 border-gray-400">
-              {resume?.user.createdAt}
+              {resume?.user.number}
             </p>
             <p className="font-small border-r-2 pr-2 border-gray-400">
-              {resume?.user.updatedAt}
+              {resume?.user.linkedinUrl}
+            </p>
+            <p className="font-small border-r-2 pr-2 border-gray-400">
+              {resume?.user.githubUrl}
             </p>
           </div>
         </div>

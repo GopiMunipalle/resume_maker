@@ -25,6 +25,7 @@ export const submitResumeData = async (
       method: "POST",
       headers: { "Content-Type": "application/json", authorization: token },
       body: JSON.stringify({
+        ...resume,
         experience: experience,
         education: education,
         projects: projects,

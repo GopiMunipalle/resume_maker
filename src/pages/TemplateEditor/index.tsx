@@ -23,8 +23,8 @@ function TemplateEditor() {
     name: "",
     email: "",
     number: "",
-    linkedIn: "",
-    gitbuLink: "",
+    linkedinUrl: "",
+    githubUrl: "",
   });
   const [summary, setSummary] = useState("");
   const [experience, setExperience] = useState<Experience[]>([
@@ -241,18 +241,18 @@ function TemplateEditor() {
           <input
             type="url"
             placeholder="LinkedIn Profile"
-            value={resume.linkedIn}
+            value={resume.linkedinUrl}
             onChange={(e) =>
-              setResume((prev) => ({ ...prev, linkedIn: e.target.value }))
+              setResume((prev) => ({ ...prev, linkedinUrl: e.target.value }))
             }
             className="p-2 border rounded"
           />
           <input
             type="url"
             placeholder="GitHub Profile"
-            value={resume.gitbuLink}
+            value={resume.githubUrl}
             onChange={(e) =>
-              setResume((prev) => ({ ...prev, gitbuLink: e.target.value }))
+              setResume((prev) => ({ ...prev, githubUrl: e.target.value }))
             }
             className="p-2 border rounded"
           />

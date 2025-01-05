@@ -28,7 +28,7 @@ export const loginPage = {
 
 export const headerPage = {
   home: "Home",
-  about: "About",
+  profile: "Profile",
   templates: "Templates",
   help: "Help",
   logout: "Logout",

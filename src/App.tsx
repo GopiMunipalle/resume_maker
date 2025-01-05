@@ -13,7 +13,7 @@ import {
 import Templates from "./pages/Templates";
 import TemplateEditor from "./pages/TemplateEditor";
 import ResumeItem from "./pages/ResumeItem";
-import StarRating from "./pages/About";
+import Profile from "./pages/Profile";
 
 function App() {
   const dispatch: AppDispatch = useDispatch();
@@ -56,6 +56,7 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/home" element={<Home />} />
       <Route path="/templates" element={<Templates />} />
+      <Route path="/profile" element={<Profile />} />
       <Route path="/create-resume" element={<TemplateEditor />} />
       <Route path="/resume/:id" element={<ResumeItem />} />
     </Routes>

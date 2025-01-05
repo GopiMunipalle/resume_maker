@@ -32,8 +32,8 @@ export interface ResumeData {
   name: string;
   email: string;
   number?: string;
-  linkedIn?: string;
-  gitbuLink?: string;
+  linkedinUrl?: string;
+  githubUrl?: string;
 }
 
 export interface AwardsData {
@@ -63,6 +63,9 @@ export interface User {
   email: string;
   id: number;
   isActive: boolean;
+  linkedinUrl?: string;
+  githubUrl?: string;
+  number?: string;
   name: string;
   role: string;
   updatedAt: string;

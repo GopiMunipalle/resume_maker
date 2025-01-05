@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import Header from "../../components/Header";
-import StarRating from "../About";
+import StarRating from "../Profile";
 import { useState } from "react";
 
 export default function Home() {

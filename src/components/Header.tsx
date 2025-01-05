@@ -27,10 +27,10 @@ export default function Header() {
             <a href="/home">{headerPage.home}</a>
           </li>
           <li>
-            <a href="/about">{headerPage.about}</a>
+            <a href="/templates">{headerPage.templates}</a>
           </li>
           <li>
-            <a href="/templates">{headerPage.templates}</a>
+            <a href="/profile">{headerPage.profile}</a>
           </li>
           <li>
             <a href="/help">{headerPage.help}</a>
