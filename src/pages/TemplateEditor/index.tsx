@@ -11,6 +11,7 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { useNavigate } from "react-router-dom";
+import Header from "../../components/Header";
 
 type FieldValue = string | boolean | null;
 
@@ -207,10 +208,11 @@ function TemplateEditor() {
   };
 
   return (
+    <>
     <div className="bg-white flex flex-col  h-full w-full max-w-4xl mx-auto p-4">
-      {/* Personal Information Section */}
+      <button className="bg-lime-500 text-white self-start mb-5 p-3 rounded" onClick={() => navigate(-1)} >back</button>
       <div className="space-y-4">
-        <input
+        {/* <input
           type="text"
           placeholder="Enter Name"
           value={resume.name}
@@ -218,7 +220,7 @@ function TemplateEditor() {
             setResume((prev) => ({ ...prev, name: e.target.value }))
           }
           className="w-full p-2 border rounded"
-        />
+        /> */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <input
             type="email"
@@ -261,7 +263,6 @@ function TemplateEditor() {
 
       <hr className="my-6" />
 
-      {/* Summary Section */}
       <div className="space-y-2">
         <h2 className="text-xl font-bold">Professional Summary</h2>
         <textarea
@@ -275,7 +276,6 @@ function TemplateEditor() {
 
       <hr className="my-6" />
 
-      {/* Experience Section */}
       <div className="space-y-4">
         <div className="flex justify-between items-center">
           <h2 className="text-xl font-bold">Experience</h2>
@@ -375,7 +375,6 @@ function TemplateEditor() {
 
       <hr className="my-6" />
 
-      {/* Skills Section */}
       <div className="space-y-4">
         <div className="flex justify-between items-center">
           <h2 className="text-xl font-bold">Skills</h2>
@@ -412,7 +411,6 @@ function TemplateEditor() {
 
       <hr className="my-6" />
 
-      {/* Projects Section */}
       <div className="space-y-4">
         <div className="flex justify-between items-center">
           <h2 className="text-xl font-bold">Projects</h2>
@@ -526,7 +524,6 @@ function TemplateEditor() {
 
       <hr className="my-6" />
 
-      {/* Education Section */}
       <div className="space-y-4">
         <div className="flex justify-between items-center">
           <h2 className="text-xl font-bold">Education</h2>
@@ -635,6 +632,7 @@ function TemplateEditor() {
         submit
       </button>
     </div>
+    </>
   );
 }
 

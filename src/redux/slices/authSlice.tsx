@@ -35,9 +35,6 @@ export const initialState: AuthState = {
   updatedAt: null,
 };
 
-export const initializeData = async () => {
-  return JSON.parse(localStorage.getItem("user") || "{}");
-};
 
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
@@ -54,7 +51,6 @@ export const loginUser = createAsyncThunk(
       });
       const data = await response.json();
       if (response.ok) {
-        localStorage.setItem("user", JSON.stringify(data.data));
         return data.data;
       } else {
         return rejectWithValue(data.message);
@@ -82,8 +78,6 @@ const authSlice = createSlice({
       state.isLoggedIn = true;
       state.createdAt = action.payload.createdAt;
       state.updatedAt = action.payload.updatedAt;
-
-      localStorage.setItem("user", JSON.stringify(state));
     },
     logout: (state) => {
       state.id = null;
@@ -100,8 +94,7 @@ const authSlice = createSlice({
       state.isLoading = false;
       state.createdAt = null;
       state.updatedAt = null;
-
-      localStorage.removeItem("user");
+      localStorage.clear()
     },
   },
   extraReducers: (builder) => {
@@ -140,8 +133,6 @@ const authSlice = createSlice({
           state.error = null;
           state.createdAt = createdAt;
           state.updatedAt = updatedAt;
-
-          localStorage.setItem("user", JSON.stringify(state));
         }
       )
       .addCase(loginUser.rejected, (state, action) => {

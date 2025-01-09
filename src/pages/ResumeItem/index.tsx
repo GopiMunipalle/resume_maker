@@ -68,7 +68,7 @@ function ResumeItem() {
 
     doc.setFontSize(20);
     doc.setFont("helvetica", "bold");
-    doc.text("sample", pageWidth / 2, y, { align: "center" });
+    doc.text(`${resume?.user.name}`, pageWidth / 2, y, { align: "center" });
     y += 0.3;
 
     doc.setFontSize(12);
@@ -106,7 +106,7 @@ function ResumeItem() {
         { align: "right" }
       );
 
-      y += lines.length * 0.3 + 0.3;
+      y += lines.length * 0.3 + 0.1;
     });
 
     doc.line(0.5, y, pageWidth - 0.5, y);
@@ -118,7 +118,7 @@ function ResumeItem() {
 
     doc.setFont("helvetica", "normal");
     doc.text(String(resume?.skills), 0.5, y);
-    y += 0.5;
+    y += 0.3;
 
     doc.line(0.5, y, pageWidth - 0.5, y);
     y += 0.3;
@@ -146,11 +146,11 @@ function ResumeItem() {
       y += lines.length * 0.2;
       doc.text(`Technologies Used: ${item.technologies}`, 0.5, y + 0.4);
 
-      y += lines.length * 0.3 + 0.4;
+      y += lines.length * 0.2 + 0.3;
     });
 
-    doc.line(0.5, y, pageWidth - 0.5, y);
-    y += 0.3;
+    doc.line(0.5, y - 0.3, pageWidth - 0.5, y - 0.3);
+    y += 0.1
 
     doc.setFont("helvetica", "bold");
     doc.text("Education", 0.5, y);
