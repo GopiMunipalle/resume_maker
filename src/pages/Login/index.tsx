@@ -72,7 +72,7 @@ function Login() {
         </div>
 
         {error && <div className="text-red-700 text-md mt-5">{error}</div>}
-        <button className="bg-blue-500 text-white py-2 px-4 rounded mt-1 hover:bg-green-600 outline-none focus:outline-none focus:border-lime-400">
+        <button className="bg-blue-500 text-white py-2 px-4 rounded mt-5 hover:bg-green-600 outline-none focus:outline-none focus:border-lime-400">
           {loginPage.button}
         </button>
         <Link
