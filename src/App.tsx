@@ -7,6 +7,7 @@ import Templates from "./pages/Templates";
 import TemplateEditor from "./pages/TemplateEditor";
 import ResumeItem from "./pages/ResumeItem";
 import Profile from "./pages/Profile";
+import HelpPage from "./pages/Help";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
       <Route path="/profile" element={<Profile />} />
       <Route path="/create-resume" element={<TemplateEditor />} />
       <Route path="/resume/:id" element={<ResumeItem />} />
+      <Route path="/help" element={<HelpPage />} />
     </Routes>
   );
 }

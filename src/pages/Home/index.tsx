@@ -1,18 +1,16 @@
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
 import Header from "../../components/Header";
+import { useNavigate } from "react-router-dom";
+import { images } from "../../assets/images";
 import { useState } from "react";
+import { homePage } from "../../constants/commontext";
+import Footer from "../../components/Footer";
 
 export default function Home() {
-  const user = useSelector((state: RootState) => state.auth);
+  const navigate = useNavigate();
 
-  // return (
-  //   <div>
-  //     <h1>Home</h1>
-  //   </div>
-  // );
+  const [isMouseEnter, setIsMouseEnter] = useState(false);
+  const [isMouseEnterTwo, setIsMouseEnterTwo] = useState(false);
 
-  // Example of key features as a separate component
   const KeyFeatures = () => (
     <div className="key-features py-10 bg-gray-50">
       <h2 className="text-3xl font-semibold text-center mb-6">Key Features</h2>
@@ -40,42 +38,54 @@ export default function Home() {
     </div>
   );
 
-  // Example of popular templates section
   const PopularTemplates = () => (
     <div className="popular-templates py-10">
       <h2 className="text-3xl font-semibold text-center mb-6">
         Popular Resume Templates
       </h2>
       <div className="template-gallery flex justify-center gap-8">
-        <div className="template w-64 p-4 border rounded-lg shadow-lg">
+        <div className="template w-64 p-4 border rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300"
+        onClick={() => navigate("/templates")}
+        >
           <img
-            src="template1.jpg"
+            src={images.template1}
             alt="Template 1"
-            className="w-full h-40 object-cover rounded-md mb-4"
+            className="w-full h-40 object-cover rounded-md mb-4 hover:scale-105 transition-transform duration-300 ease-in-out "
           />
           <p className="text-center">Modern Style</p>
         </div>
-        <div className="template w-64 p-4 border rounded-lg shadow-lg">
+        <div className="template w-64 p-4 border rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300"
+        onMouseEnter={() => setIsMouseEnter(true)}
+        onMouseLeave={() => setIsMouseEnter(false)}
+        >
           <img
-            src="template2.jpg"
+            src={images.template2}
             alt="Template 2"
-            className="w-full h-40 object-cover rounded-md mb-4"
+            className="w-full h-40 object-cover rounded-md mb-4 hover:scale-105 transition-transform duration-300 ease-in-out"
           />
           <p className="text-center">Minimalist Style</p>
+          {isMouseEnter && (
+            <p className="text-center text-sm italic text-gray-500">{homePage.paid}</p>
+          )}
         </div>
-        <div className="template w-64 p-4 border rounded-lg shadow-lg">
+        <div className="template w-64 p-4 border rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300"
+        onMouseEnter={() => setIsMouseEnterTwo(true)}
+        onMouseLeave={() => setIsMouseEnterTwo(false)}
+        >
           <img
-            src="template3.jpg"
+            src={images.template3}
             alt="Template 3"
-            className="w-full h-40 object-cover rounded-md mb-4"
+            className="w-full h-40 object-cover rounded-md mb-4 hover:scale-105 transition-transform duration-300 ease-in-out"
           />
           <p className="text-center">Professional Style</p>
+          {isMouseEnterTwo && (
+            <p className="text-center text-sm italic text-gray-500">{homePage.paid}</p>
+          )}
         </div>
       </div>
     </div>
   );
 
-  // Example of a user testimonial section
   const Testimonials = () => (
     <div className="testimonials py-10 bg-gray-100">
       <h2 className="text-3xl font-semibold text-center mb-6">
@@ -94,8 +104,7 @@ export default function Home() {
   );
 
   const handleStartClick = () => {
-    // Navigate to Templates section or trigger an action (e.g., using React Router)
-    console.log("Starting Resume Creation...");
+    navigate("/templates")
   };
 
   return (
@@ -131,6 +140,7 @@ export default function Home() {
           </a>
         </p>
       </footer>
+      <Footer/>
     </div>
   );
 }
