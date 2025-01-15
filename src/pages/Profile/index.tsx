@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { images } from "../../assets/images";
 import { MdEdit } from "react-icons/md";
+import Model from "../../components/Model";
 
 const Profile = () => {
   const user = useSelector((state: RootState) => state.auth);
@@ -23,6 +24,9 @@ const Profile = () => {
   const [linkedinUrl, setLinkedinUrl] = useState(user.linkedinUrl);
   const [githubUrl, setGithubUrl] = useState(user.githubUrl);
   const [confirmPassword, setConfirmPassword] = useState("........");
+  const [modelOpen, isModelOpen] = useState(false);
+  const [profilePicture, setProfilePicture] = useState<string | null>(null); // Store the selected image
+  const [imagePreview, setImagePreview] = useState<string | null>(null); // Sto
 
   useEffect(() => {
     updateUserData();
@@ -32,16 +36,49 @@ const Profile = () => {
     // Code to update user data (API call, etc.)
   };
 
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]; // Get the selected file
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string); // Set the preview URL for the image
+        setProfilePicture(file); // Set the file for further processing (uploading, etc.)
+      };
+      reader.readAsDataURL(file); // Read the file as a data URL (base64 string)
+    }
+  };
+
   return (
     <div className="bg-[#121212] min-h-screen">
       <Header />
       <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md mt-8">
         <div className="flex flex-col sm:flex-row items-center space-x-4">
-          <img
-            src={user.profilePicture || images.profilepic}
-            alt="profilePic"
-            className="w-24 h-24 rounded-full object-cover mb-6 sm:mb-0"
-          />
+          <div className="flex flex-col items-center">
+            {/* Display the image or preview if available */}
+            <img
+              src={
+                images.profilepic || user.profilePicture || "default_image_url"
+              }
+              alt="profilePic"
+              className="w-24 h-24 rounded-full object-cover mb-6 sm:mb-0"
+            />
+            <MdEdit
+              size={22}
+              onClick={() => document.getElementById("imageInput")?.click()}
+              className="text-blue-500 cursor-pointer hover:text-blue-700"
+            />
+
+            {/* Hidden file input to select image */}
+            <input
+              type="file"
+              id="imageInput"
+              onChange={handleImageChange}
+              className="hidden"
+              accept="image/*"
+            />
+          </div>
+          <h1>Resumes: {"10"}</h1>
           <div className="flex flex-col gap-6 w-full">
             <div className="flex flex-col space-y-4">
               <div className="flex items-center justify-between">
@@ -100,20 +137,28 @@ const Profile = () => {
                       isPasswordEdit: !isEdit.isPasswordEdit,
                     });
                     setPassword("......");
+                    isModelOpen((prevState) => !prevState);
                   }}
                   className="text-blue-500 cursor-pointer hover:text-blue-700"
                 />
               </div>
               <input
                 type="password"
-                disabled={!isEdit.isPasswordEdit}
+                disabled={!modelOpen}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className={`px-4 py-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  !isEdit.isPasswordEdit ? "bg-gray-200" : "bg-white"
+                  !modelOpen ? "bg-gray-200" : "bg-white"
                 }`}
               />
             </div>
+
+            {modelOpen && (
+              <Model
+                content={{ name: "Update Password", name2: "Password" }}
+                isModelOpen={isModelOpen}
+              />
+            )}
 
             <div className="flex flex-col space-y-4">
               <div className="flex items-center justify-between">
