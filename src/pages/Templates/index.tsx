@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { useNavigate } from "react-router-dom";
 import { resumesData } from "../../redux/slices/resumeSlice";
+import { deleteResume } from "../../services/templateServices";
 
 function Templates() {
   const resumeData = useSelector((state: RootState) => state.resume.resumes);
@@ -14,6 +15,18 @@ function Templates() {
   useEffect(() => {
     dispath(resumesData(userData.token));
   }, [userData.token]);
+
+  const handleDeleteResume = async (id: number) => {
+    try {
+      const response = await deleteResume(userData.token, id);
+      if (!response.status) {
+        alert(response.data.error);
+      }
+      window.location.reload();
+    } catch (error: any) {
+      alert(error.message);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-900 pb-10">
@@ -116,6 +129,12 @@ function Templates() {
                   className="bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded text-sm"
                 >
                   View
+                </button>
+                <button
+                  onClick={() => handleDeleteResume(resume.id)}
+                  className="bg-red-500 hover:bg-red-300 px-3 py-1 rounded text-sm ml-5"
+                >
+                  Delete
                 </button>
               </div>
             ))}

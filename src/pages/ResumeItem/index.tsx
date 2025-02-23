@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
   Education,
@@ -30,6 +30,7 @@ function ResumeItem() {
   const { id } = useParams();
   const [resume, setResume] = useState<Data | null>(null);
   const user = useSelector((state: RootState) => state.auth);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchResume() {
@@ -43,142 +44,149 @@ function ResumeItem() {
     fetchResume();
   }, [id, user.token]);
 
-  const generatePDF = () => {
-    const doc = new jsPDF({
-      orientation: "portrait",
-      unit: "in",
-    });
+  function getMonthAndYear(startDate: string | null) {
+    const date = new Date(String(startDate));
+    const options: any = { year: "numeric", month: "short" };
+    const formattedDate = date.toLocaleString("en-US", options);
+    return formattedDate;
+  }
 
+  const generatePDF = () => {
+    const doc = new jsPDF({ orientation: "portrait", unit: "in" });
     const pageWidth = doc.internal.pageSize.width;
     const pageHeight = doc.internal.pageSize.height;
-
     let y = 0.5;
-
-    const maxWidth = pageWidth - 1;
+    const margin = 0.5;
+    const maxWidth = pageWidth - 2 * margin;
+    const lineSpacing = 0.22;
 
     const checkPageOverflow = (requiredSpace: number) => {
-      if (y + requiredSpace > pageHeight - 0.5) {
+      if (y + requiredSpace > pageHeight - margin) {
         doc.addPage();
-        y = 0.5;
+        y = margin;
       }
     };
 
     doc.setDrawColor(169, 169, 169);
     doc.setLineWidth(0.02);
 
+    const addSection = (title: string, content: any, bold = false) => {
+      checkPageOverflow(lineSpacing * 2);
+      doc.setFont("helvetica", bold ? "bold" : "normal");
+      doc.text(title, margin, y);
+      y += lineSpacing;
+      if (content) {
+        const lines = doc.splitTextToSize(content, maxWidth);
+        doc.text(lines, margin, y);
+        y += lines.length * lineSpacing;
+      }
+    };
+
     doc.setFontSize(20);
     doc.setFont("helvetica", "bold");
-    doc.text(`${resume?.user.name}`, pageWidth / 2, y, { align: "center" });
+    doc.text(resume?.user.name || "", pageWidth / 2, y, { align: "center" });
     y += 0.3;
 
     doc.setFontSize(12);
     doc.setFont("helvetica", "normal");
     doc.text(
-      `${resume?.user.email} | ${resume?.user.number} | ${resume?.user.githubUrl} | ${resume?.user.linkedinUrl}`,
+      `${resume?.user.email || ""} | ${resume?.user.number || ""} | ${
+        resume?.user.githubUrl || ""
+      } | ${resume?.user.linkedinUrl || ""}`,
       pageWidth / 2,
       y,
       { align: "center" }
     );
     y += 0.3;
 
-    doc.line(0.5, y, pageWidth - 0.5, y);
-    y += 0.3;
-
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(14);
-    doc.text("Experience", 0.5, y);
-    y += 0.3;
-
-    resume?.experience.forEach((item) => {
-      checkPageOverflow(0.8);
-
+    if (resume?.summary) {
       doc.setFont("helvetica", "bold");
-      doc.text(item.title, 0.5, y);
-      doc.setFont("helvetica", "normal");
+      doc.text("Summary", margin, y);
+      addSection("", resume.summary, false);
+      y += lineSpacing - 0.2;
+    }
 
-      const lines = doc.splitTextToSize(item.description, maxWidth);
-      doc.text(lines, 0.5, y + 0.2);
+    if (Array.isArray(resume?.experience) && resume.experience.length) {
+      addSection("Experience", "", true);
+      resume.experience.forEach(
+        ({ title, description, startDate, endDate }) => {
+          checkPageOverflow(0.8);
+          const formattedDate = `${getMonthAndYear(startDate)} - ${
+            endDate ? getMonthAndYear(endDate) : "Present"
+          }`;
 
-      doc.text(
-        `${item.startDate} - ${item.endDate ? item.endDate : "Present"}`,
-        pageWidth - 0.5,
-        y,
-        { align: "right" }
+          const dateWidth = doc.getTextWidth(formattedDate);
+          const xPosition = pageWidth - margin - dateWidth;
+
+          doc.setFont("helvetica", "bold");
+          doc.text(title, margin, y);
+          doc.text(formattedDate, xPosition, y);
+          y += lineSpacing - 0.2;
+
+          addSection("", description);
+        }
       );
+    }
 
-      y += lines.length * 0.3 + 0.1;
-    });
+    if (resume?.skills) {
+      y += lineSpacing - 0.2;
+      addSection("Skills", resume.skills, true);
+    }
 
-    doc.line(0.5, y, pageWidth - 0.5, y);
-    y += 0.3;
+    if (Array.isArray(resume?.projects) && resume.projects.length) {
+      addSection("Projects", "", true);
+      resume.projects.forEach(
+        ({ title, description, startDate, endDate, technologies }) => {
+          checkPageOverflow(0.8);
+          const formattedDate = `${getMonthAndYear(startDate)} - ${
+            endDate ? getMonthAndYear(endDate) : "Present"
+          }`;
 
-    doc.setFont("helvetica", "bold");
-    doc.text("Skills", 0.5, y);
-    y += 0.3;
+          const dateWidth = doc.getTextWidth(formattedDate);
+          const xPosition = pageWidth - margin - dateWidth;
 
-    doc.setFont("helvetica", "normal");
-    doc.text(String(resume?.skills), 0.5, y);
-    y += 0.3;
+          doc.setFont("helvetica", "bold");
+          doc.text(title, margin, y);
+          doc.text(formattedDate, xPosition, y);
+          y += lineSpacing - 0.2;
 
-    doc.line(0.5, y, pageWidth - 0.5, y);
-    y += 0.3;
-
-    doc.setFont("helvetica", "bold");
-    doc.text("Projects", 0.5, y);
-    y += 0.3;
-
-    resume?.projects.forEach((item) => {
-      checkPageOverflow(0.8);
-
-      doc.setFont("helvetica", "bold");
-      doc.text(item.title, 0.5, y);
-      doc.setFont("helvetica", "normal");
-
-      const lines = doc.splitTextToSize(item.description, maxWidth);
-      doc.text(lines, 0.5, y + 0.2);
-
-      doc.text(
-        `${item.startDate} - ${item.endDate ? item.endDate : "Present"}`,
-        pageWidth - 0.5,
-        y,
-        { align: "right" }
+          addSection("", description);
+          if (technologies) addSection("Technologies Used:", technologies);
+        }
       );
-      y += lines.length * 0.2;
-      doc.text(`Technologies Used: ${item.technologies}`, 0.5, y + 0.4);
+    }
 
-      y += lines.length * 0.2 + 0.3;
-    });
+    if (Array.isArray(resume?.education) && resume.education.length) {
+      addSection("Education", "", true);
+      resume.education.forEach(({ degree, school, startDate, endDate }) => {
+        checkPageOverflow(0.8);
+        const formattedDate = `${getMonthAndYear(startDate)} - ${
+          endDate ? getMonthAndYear(endDate) : "Present"
+        }`;
 
-    doc.line(0.5, y - 0.3, pageWidth - 0.5, y - 0.3);
-    y += 0.1
+        const dateWidth = doc.getTextWidth(formattedDate);
+        const xPosition = pageWidth - margin - dateWidth;
 
-    doc.setFont("helvetica", "bold");
-    doc.text("Education", 0.5, y);
-    y += 0.3;
+        doc.setFont("helvetica", "bold");
+        doc.text(degree, margin, y);
+        doc.text(formattedDate, xPosition, y);
+        y += lineSpacing - 0.2;
 
-    resume?.education.forEach((item) => {
-      checkPageOverflow(0.8);
-
-      doc.setFont("helvetica", "bold");
-      doc.text(item.degree, 0.5, y);
-      doc.setFont("helvetica", "normal");
-      doc.text(item.school, 0.5, y + 0.2);
-
-      doc.text(
-        `${item.startDate} - ${item.endDate ? item.endDate : "Present"}`,
-        pageWidth - 0.5,
-        y,
-        { align: "right" }
-      );
-
-      y += 0.6;
-    });
+        addSection("", school);
+      });
+    }
 
     doc.save("resume.pdf");
   };
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-gray-900 p-6">
+      <button
+        onClick={() => navigate(-1)}
+        className="text-xl font-semibold text-zinc-100 hover:text-gray-700 self-start"
+      >
+        back
+      </button>
       <div className="bg-white w-full max-w-3xl p-5 rounded-lg shadow-lg flex flex-col space-y-6">
         <div className="flex flex-col justify-between items-center gap-2">
           <h1 className="text-2xl font-bold">{resume?.user.name}</h1>
@@ -198,6 +206,15 @@ function ResumeItem() {
           </div>
         </div>
         <hr className="my-6 border-gray-400" />
+        {resume?.summary && (
+          <>
+            <div>
+              <h2 className="text-xl font-semibold">Summary</h2>
+              <p className="text-sm">{resume?.summary}</p>
+            </div>
+            <hr className="my-6 border-gray-400" />
+          </>
+        )}
         <div>
           <h2 className="text-xl font-semibold">Experience</h2>
           {Array.isArray(resume?.experience) &&
@@ -207,7 +224,8 @@ function ResumeItem() {
                 <div className="flex justify-between items-center">
                   <h3 className="font-semibold">{item.title}</h3>
                   <p className="text-sm">
-                    {item.startDate} - {item.endDate ? item.endDate : "Present"}
+                    {getMonthAndYear(item.startDate)} -{" "}
+                    {item.endDate ? getMonthAndYear(item.endDate) : "Present"}
                   </p>
                 </div>
                 <p className="text-sm">{item.description}</p>
@@ -229,7 +247,8 @@ function ResumeItem() {
                 <div className="flex justify-between items-center">
                   <h3 className="font-semibold">{item.title}</h3>
                   <p className="text-sm">
-                    {item.startDate} - {item.endDate ? item.endDate : "Present"}
+                    {getMonthAndYear(item.startDate)} -{" "}
+                    {item.endDate ? getMonthAndYear(item.endDate) : "Present"}
                   </p>
                 </div>
                 <p className="text-sm">{item.description}</p>
@@ -250,7 +269,8 @@ function ResumeItem() {
                 <div className="flex justify-between items-center">
                   <h3 className="font-semibold">{item.degree}</h3>
                   <p className="text-sm">
-                    {item.startDate} - {item.endDate ? item.endDate : "Present"}
+                    {getMonthAndYear(item.startDate)} -{" "}
+                    {item.endDate ? getMonthAndYear(item.endDate) : "Present"}
                   </p>
                 </div>
                 <p className="text-sm">{item.school}</p>

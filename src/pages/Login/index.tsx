@@ -20,7 +20,7 @@ function Login() {
     e.preventDefault();
     const result = await dispatch(loginUser({ email, password })).unwrap();
     if (result.token) {
-      navigate("/home");
+      navigate("/home", { replace: false });
     } else {
       setError(result.error);
     }
@@ -37,6 +37,7 @@ function Login() {
 
         <label className="mt-5 text-gray-600 font-semibold text-md self-start">
           {loginPage.email}
+          <span style={{ color: "red" }}>*</span>
         </label>
         <input
           className="border border-gray-200 p-2 rounded focus:outline-none bg-white text-black h-12"
@@ -49,6 +50,7 @@ function Login() {
 
         <label className="mt-5 text-gray-600 font-semibold text-md self-start">
           {loginPage.password}
+          <span style={{ color: "red" }}>*</span>
         </label>
         <div className="flex justify-between items-center w-full border border-gray-200 p-2 rounded h-12">
           <input

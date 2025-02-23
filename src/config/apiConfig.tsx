@@ -6,4 +6,5 @@ export const apiConfig = {
   createResume: `${BASE_URL}/resume/`,
   allResumes: `${BASE_URL}/resume/all`,
   getResume: `${BASE_URL}/resume/`,
+  deleteResume: `${BASE_URL}/resume/`,
 };

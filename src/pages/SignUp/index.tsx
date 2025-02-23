@@ -33,13 +33,24 @@ function SignUp() {
         }),
       });
       const data = await response.json();
-      if (!response.status) {
-        setError(data.data.message);
+      if (!response.ok) {
+        setError(data?.message[0] || "Unknown error");
+        return;
       }
       navigate("/login", { replace: true });
     } catch (error: any) {
       setError(error.message);
     }
+  };
+
+  const handleShowPassword = (e: React.FormEvent) => {
+    e.preventDefault();
+    setShowPassword(!showPassword);
+  };
+
+  const handleShowConfirmPassword = (e: React.FormEvent) => {
+    e.preventDefault();
+    setShowConfirmPassword(!showConfirmPassword);
   };
 
   return (
@@ -54,6 +65,7 @@ function SignUp() {
         </p>
         <label className="mt-5 text-gray-600 font-semibold text-md self-start">
           {signUpPage.username}
+          <span style={{ color: "red" }}>*</span>
         </label>
         <input
           className="border border-gray-200 p-2 rounded focus:outline-none bg-white text-black h-12"
@@ -65,6 +77,7 @@ function SignUp() {
         />
         <label className="mt-5 text-gray-600 font-semibold text-md self-start">
           {signUpPage.email}
+          <span style={{ color: "red" }}>*</span>
         </label>
         <input
           className="border border-gray-200 p-2 rounded focus:outline-none bg-white text-black h-12"
@@ -76,6 +89,7 @@ function SignUp() {
         />
         <label className="mt-5 text-gray-600 font-semibold text-md self-start">
           {signUpPage.password}
+          <span style={{ color: "red" }}>*</span>
         </label>
         <div className="flex justify-between items-center border border-gray-200 p-2 rounded h-12">
           <input
@@ -88,7 +102,7 @@ function SignUp() {
           />
           <button
             className="bg-white outline-none border-none focus:outline-none focus:border-none"
-            onClick={() => setShowPassword(!showPassword)}
+            onClick={handleShowPassword}
           >
             {showPassword ? (
               <IoMdEyeOff className="bg-transparent text-black" />
@@ -99,6 +113,7 @@ function SignUp() {
         </div>
         <label className="mt-5 text-gray-600 font-semibold text-md self-start">
           {signUpPage.confirmPassword}
+          <span style={{ color: "red" }}>*</span>
         </label>
         <div className="flex justify-between items-center border border-gray-200 p-2 rounded h-12">
           <input
@@ -111,7 +126,7 @@ function SignUp() {
           />
           <button
             className="bg-white outline-none border-none focus:outline-none focus:border-none"
-            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            onClick={handleShowConfirmPassword}
           >
             {showConfirmPassword ? (
               <IoMdEyeOff className="bg-transparent text-black" />

@@ -14,7 +14,7 @@ export interface Education {
   startDate: string | null;
   endDate: string | null;
   currentlyWorking: boolean;
-  cgpa?: number;
+  cgpa?: number | null;
 }
 
 export interface Project {

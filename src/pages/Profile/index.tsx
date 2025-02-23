@@ -25,27 +25,25 @@ const Profile = () => {
   const [githubUrl, setGithubUrl] = useState(user.githubUrl);
   const [confirmPassword, setConfirmPassword] = useState("........");
   const [modelOpen, isModelOpen] = useState(false);
-  const [profilePicture, setProfilePicture] = useState<string | null>(null); // Store the selected image
-  const [imagePreview, setImagePreview] = useState<string | null>(null); // Sto
+  const [profilePicture, setProfilePicture] = useState<string | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   useEffect(() => {
     updateUserData();
   }, []);
 
-  const updateUserData = async () => {
-    // Code to update user data (API call, etc.)
-  };
+  const updateUserData = async () => {};
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]; // Get the selected file
+    const file = event.target.files?.[0];
 
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result as string); // Set the preview URL for the image
-        setProfilePicture(file); // Set the file for further processing (uploading, etc.)
+        setImagePreview(reader.result as string);
+        // setProfilePicture(file);
       };
-      reader.readAsDataURL(file); // Read the file as a data URL (base64 string)
+      reader.readAsDataURL(file);
     }
   };
 
@@ -55,7 +53,6 @@ const Profile = () => {
       <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md mt-8">
         <div className="flex flex-col sm:flex-row items-center space-x-4">
           <div className="flex flex-col items-center">
-            {/* Display the image or preview if available */}
             <img
               src={
                 images.profilepic || user.profilePicture || "default_image_url"
@@ -63,13 +60,12 @@ const Profile = () => {
               alt="profilePic"
               className="w-24 h-24 rounded-full object-cover mb-6 sm:mb-0"
             />
-            <MdEdit
+            {/* <MdEdit
               size={22}
               onClick={() => document.getElementById("imageInput")?.click()}
               className="text-blue-500 cursor-pointer hover:text-blue-700"
-            />
+            /> */}
 
-            {/* Hidden file input to select image */}
             <input
               type="file"
               id="imageInput"
@@ -78,19 +74,18 @@ const Profile = () => {
               accept="image/*"
             />
           </div>
-          <h1>Resumes: {"10"}</h1>
           <div className="flex flex-col gap-6 w-full">
             <div className="flex flex-col space-y-4">
               <div className="flex items-center justify-between">
                 <label className="text-lg text-gray-700">Name</label>
-                <MdEdit
+                {/* <MdEdit
                   size={22}
                   onClick={() => {
                     setEdit({ ...isEdit, isNameEdit: !isEdit.isNameEdit });
                     setName(user.name);
                   }}
                   className="text-blue-500 cursor-pointer hover:text-blue-700"
-                />
+                /> */}
               </div>
               <input
                 type="text"
@@ -106,14 +101,14 @@ const Profile = () => {
             <div className="flex flex-col space-y-4">
               <div className="flex items-center justify-between">
                 <label className="text-lg text-gray-700">Email</label>
-                <MdEdit
+                {/* <MdEdit
                   size={22}
                   onClick={() => {
                     setEdit({ ...isEdit, isEmailEdit: !isEdit.isEmailEdit });
                     setEmail(user.email);
                   }}
                   className="text-blue-500 cursor-pointer hover:text-blue-700"
-                />
+                /> */}
               </div>
               <input
                 type="email"
@@ -129,18 +124,18 @@ const Profile = () => {
             <div className="flex flex-col space-y-4">
               <div className="flex items-center justify-between">
                 <label className="text-lg text-gray-700">Password</label>
-                <MdEdit
+                {/* <MdEdit
                   size={22}
                   onClick={() => {
                     setEdit({
                       ...isEdit,
                       isPasswordEdit: !isEdit.isPasswordEdit,
                     });
-                    setPassword("......");
-                    isModelOpen((prevState) => !prevState);
+                    // setPassword("......"); */}
+                {/* isModelOpen((prevState) => !prevState);
                   }}
                   className="text-blue-500 cursor-pointer hover:text-blue-700"
-                />
+                /> */}
               </div>
               <input
                 type="password"
@@ -163,14 +158,14 @@ const Profile = () => {
             <div className="flex flex-col space-y-4">
               <div className="flex items-center justify-between">
                 <label className="text-lg text-gray-700">Phone Number</label>
-                <MdEdit
+                {/* <MdEdit
                   size={22}
                   onClick={() => {
                     setEdit({ ...isEdit, isNumberEdit: !isEdit.isNumberEdit });
                     setNumber(user.number);
                   }}
                   className="text-blue-500 cursor-pointer hover:text-blue-700"
-                />
+                /> */}
               </div>
               <input
                 type="text"
@@ -186,17 +181,17 @@ const Profile = () => {
             <div className="flex flex-col space-y-4">
               <div className="flex items-center justify-between">
                 <label className="text-lg text-gray-700">GitHub URL</label>
-                <MdEdit
+                {/* <MdEdit
                   size={22}
                   onClick={() => {
                     setEdit({
                       ...isEdit,
                       isGithubUrlEdit: !isEdit.isGithubUrlEdit,
                     });
-                    setGithubUrl(user.githubUrl);
-                  }}
+                    setGithubUrl(user.githubUrl); */}
+                {/* }}
                   className="text-blue-500 cursor-pointer hover:text-blue-700"
-                />
+                /> */}
               </div>
               <input
                 type="text"
@@ -212,17 +207,17 @@ const Profile = () => {
             <div className="flex flex-col space-y-4">
               <div className="flex items-center justify-between">
                 <label className="text-lg text-gray-700">LinkedIn URL</label>
-                <MdEdit
+                {/* <MdEdit
                   size={22}
                   onClick={() => {
                     setEdit({
                       ...isEdit,
                       isLinkedinUrlEdit: !isEdit.isLinkedinUrlEdit,
                     });
-                    setLinkedinUrl(user.linkedinUrl);
-                  }}
+                    setLinkedinUrl(user.linkedinUrl); */}
+                {/* }}
                   className="text-blue-500 cursor-pointer hover:text-blue-700"
-                />
+                /> */}
               </div>
               <input
                 type="text"
