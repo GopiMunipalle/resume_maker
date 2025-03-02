@@ -11,7 +11,6 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { useNavigate } from "react-router-dom";
-import Header from "../../components/Header";
 
 type FieldValue = string | boolean | null;
 
@@ -59,8 +58,6 @@ function TemplateEditor() {
       technologies: "",
     },
   ]);
-  const [awards, setAwards] = useState<AwardsData[]>([]);
-  const [ceritificates, setCeritificates] = useState<CeritificatesData[]>([]);
   const [error, setError] = useState("");
   const userData = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
@@ -187,6 +184,8 @@ function TemplateEditor() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    let awards: AwardsData[] = [];
+    let ceritificates: CeritificatesData[] = [];
     const message = await submitResumeData(
       resume,
       summary,
@@ -199,7 +198,6 @@ function TemplateEditor() {
       Number(userData.id),
       userData.token
     );
-    console.log("message", message);
     if (message.id !== undefined) {
       navigate("/templates", { state: { id: message.id }, replace: true });
     } else {
@@ -635,7 +633,7 @@ function TemplateEditor() {
               <input
                 // type="number"
                 placeholder="CGPA"
-                value={educations.cgpa}
+                value={String(educations.cgpa)}
                 onChange={(e) =>
                   handleFieldChange(index, "cgpa", e.target.value, "education")
                 }

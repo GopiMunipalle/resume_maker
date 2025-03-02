@@ -3,7 +3,6 @@ import Header from "../../components/Header";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { images } from "../../assets/images";
-import { MdEdit } from "react-icons/md";
 import Model from "../../components/Model";
 
 const Profile = () => {
@@ -23,16 +22,26 @@ const Profile = () => {
   const [password, setPassword] = useState("........");
   const [linkedinUrl, setLinkedinUrl] = useState(user.linkedinUrl);
   const [githubUrl, setGithubUrl] = useState(user.githubUrl);
-  const [confirmPassword, setConfirmPassword] = useState("........");
+  // const [confirmPassword, setConfirmPassword] = useState("........");
   const [modelOpen, isModelOpen] = useState(false);
-  const [profilePicture, setProfilePicture] = useState<string | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  // const [profilePicture, setProfilePicture] = useState<string | null>(null);
+  // const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   useEffect(() => {
     updateUserData();
   }, []);
 
-  const updateUserData = async () => {};
+  const updateUserData = async () => {
+    setEdit({
+      isNameEdit: true,
+      isEmailEdit: false,
+      isNumberEdit: false,
+      isPasswordEdit: false,
+      isLinkedinUrlEdit: false,
+      isGithubUrlEdit: false,
+      isProfilePictureEdit: false,
+    });
+  };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -40,7 +49,7 @@ const Profile = () => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result as string);
+        // setImagePreview(reader.result as string);
         // setProfilePicture(file);
       };
       reader.readAsDataURL(file);
