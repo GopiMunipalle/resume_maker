@@ -35,7 +35,6 @@ export const initialState: AuthState = {
   updatedAt: null,
 };
 
-
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (
@@ -43,7 +42,6 @@ export const loginUser = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      console.log("email", email, "password", password);
       const response = await fetch(apiConfig.login, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -94,7 +92,7 @@ const authSlice = createSlice({
       state.isLoading = false;
       state.createdAt = null;
       state.updatedAt = null;
-      localStorage.clear()
+      localStorage.clear();
     },
   },
   extraReducers: (builder) => {
