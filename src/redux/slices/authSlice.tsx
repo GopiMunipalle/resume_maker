@@ -37,15 +37,12 @@ export const initialState: AuthState = {
 
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
-  async (
-    { email, password }: { email: string; password: string },
-    { rejectWithValue }
-  ) => {
+  async ({ email }: { email: string }, { rejectWithValue }) => {
     try {
       const response = await fetch(apiConfig.login, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email }),
       });
       const data = await response.json();
       if (response.ok) {

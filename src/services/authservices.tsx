@@ -14,12 +14,7 @@ export const login = async (email: string, password: string) => {
   }
 };
 
-export const register = async (userData: {
-  name: string;
-  email: string;
-  password: string;
-  role: string;
-}) => {
+export const register = async (userData: { email: string }) => {
   try {
     const response = await fetch(apiConfig.signUp, {
       method: "POST",
@@ -27,10 +22,11 @@ export const register = async (userData: {
       body: JSON.stringify(userData),
     });
     const data = await response.json();
+    console.log("data", data);
     if (data.statusCode === 200 || data.statusCode === 201) {
       return { data, status: true };
     }
-    return data.message[0];
+    return data;
   } catch (error: any) {
     return error.message;
   }
