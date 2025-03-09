@@ -1,17 +1,21 @@
 import { images } from "../assets/images";
-import { useDispatch } from "react-redux";
-import { logout } from "../redux/slices/authSlice";
 import { headerPage } from "../constants/commontext";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { FaBars, FaTimes } from "react-icons/fa";
+import Cookies from "js-cookie";
 
 export default function Header() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    dispatch(logout());
-    navigate("/login");
+    Cookies.remove("user");
+    navigate("/");
+  };
+
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
   };
 
   return (
@@ -22,15 +26,27 @@ export default function Header() {
           src={images.resumeLogo}
           alt="logo"
         />
-        <span className="text-white font-bold text-xl sm:text-2xl">Resume Builder</span>
+        <span className="text-white font-bold text-xl hidden md:block">
+          Resume Builder
+        </span>
       </div>
 
-      <nav>
-        <ul className="flex items-center space-x-6 text-white font-semibold text-lg">
+      <div className="md:hidden flex items-center">
+        <button onClick={toggleMenu}>
+          {menuOpen ? (
+            <FaTimes className="text-white text-2xl" />
+          ) : (
+            <FaBars className="text-white text-2xl" />
+          )}
+        </button>
+      </div>
+
+      <nav className="hidden md:flex">
+        <ul className="flex sm:flex-row flex-row sm:space-x-6 space-y-4 sm:space-y-0 items-center text-white font-semibold text-lg">
           <li>
             <a
               href="/home"
-              className="hover:text-indigo-300 transition-colors duration-300"
+              className="hover:text-indigo-300 transition-colors duration-3004 text-[10px] md:text-[16px]"
             >
               {headerPage.home}
             </a>
@@ -38,7 +54,7 @@ export default function Header() {
           <li>
             <a
               href="/templates"
-              className="hover:text-indigo-300 transition-colors duration-300"
+              className="hover:text-indigo-300 transition-colors duration-300 text-[10px] md:text-[16px]"
             >
               {headerPage.templates}
             </a>
@@ -46,7 +62,7 @@ export default function Header() {
           <li>
             <a
               href="/profile"
-              className="hover:text-indigo-300 transition-colors duration-300"
+              className="hover:text-indigo-300 transition-colors duration-300 text-[10px] md:text-[16px]"
             >
               {headerPage.profile}
             </a>
@@ -54,7 +70,56 @@ export default function Header() {
           <li>
             <a
               href="/help"
-              className="hover:text-indigo-300 transition-colors duration-300"
+              className="hover:text-indigo-300 transition-colors duration-300 text-[10px] md:text-[16px]"
+            >
+              {headerPage.help}
+            </a>
+          </li>
+          <li>
+            <button
+              onClick={handleLogout}
+              className="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-md transition-colors duration-300"
+            >
+              {headerPage.logout}
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+      <nav
+        className={`${
+          menuOpen ? "block" : "hidden"
+        } md:hidden absolute top-16 left-0 w-full bg-indigo-700`}
+      >
+        <ul className="flex flex-col items-center text-white font-semibold text-lg space-y-4 py-4">
+          <li>
+            <a
+              href="/home"
+              className="hover:text-indigo-300 transition-colors duration-300 text-[16px]"
+            >
+              {headerPage.home}
+            </a>
+          </li>
+          <li>
+            <a
+              href="/templates"
+              className="hover:text-indigo-300 transition-colors duration-300 text-[16px]"
+            >
+              {headerPage.templates}
+            </a>
+          </li>
+          <li>
+            <a
+              href="/profile"
+              className="hover:text-indigo-300 transition-colors duration-300 text-[16px]"
+            >
+              {headerPage.profile}
+            </a>
+          </li>
+          <li>
+            <a
+              href="/help"
+              className="hover:text-indigo-300 transition-colors duration-300 text-[16px]"
             >
               {headerPage.help}
             </a>

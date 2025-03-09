@@ -30,7 +30,6 @@ export interface Project {
 
 export interface ResumeData {
   name: string;
-  email: string;
   number?: string;
   linkedinUrl?: string;
   githubUrl?: string;

@@ -7,7 +7,6 @@ import Footer from "../../components/Footer";
 
 export default function Home() {
   const navigate = useNavigate();
-
   const [isMouseEnter, setIsMouseEnter] = useState(false);
   const [isMouseEnterTwo, setIsMouseEnterTwo] = useState(false);
 
@@ -43,9 +42,10 @@ export default function Home() {
       <h2 className="text-3xl font-semibold text-center mb-6">
         Popular Resume Templates
       </h2>
-      <div className="template-gallery flex justify-center gap-8">
-        <div className="template w-64 p-4 border rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300"
-        onClick={() => navigate("/templates")}
+      <div className="template-gallery flex flex-wrap justify-center gap-8">
+        <div
+          className="template w-64 p-4 border rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300"
+          onClick={() => navigate("/templates")}
         >
           <img
             src={images.template1}
@@ -54,9 +54,11 @@ export default function Home() {
           />
           <p className="text-center">Modern Style</p>
         </div>
-        <div className="template w-64 p-4 border rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300"
-        onMouseEnter={() => setIsMouseEnter(true)}
-        onMouseLeave={() => setIsMouseEnter(false)}
+        <div
+          className="template w-64 p-4 border rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300"
+          onMouseEnter={() => setIsMouseEnter(true)}
+          onMouseLeave={() => setIsMouseEnter(false)}
+          onClick={() => navigate("/templates")}
         >
           <img
             src={images.template2}
@@ -65,12 +67,15 @@ export default function Home() {
           />
           <p className="text-center">Minimalist Style</p>
           {isMouseEnter && (
-            <p className="text-center text-sm italic text-gray-500">{homePage.paid}</p>
+            <p className="text-center text-sm italic text-gray-500">
+              {homePage.paid}
+            </p>
           )}
         </div>
-        <div className="template w-64 p-4 border rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300"
-        onMouseEnter={() => setIsMouseEnterTwo(true)}
-        onMouseLeave={() => setIsMouseEnterTwo(false)}
+        <div
+          className="template w-64 p-4 border rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300"
+          onMouseEnter={() => setIsMouseEnterTwo(true)}
+          onMouseLeave={() => setIsMouseEnterTwo(false)}
         >
           <img
             src={images.template3}
@@ -79,7 +84,9 @@ export default function Home() {
           />
           <p className="text-center">Professional Style</p>
           {isMouseEnterTwo && (
-            <p className="text-center text-sm italic text-gray-500">{homePage.paid}</p>
+            <p className="text-center text-sm italic text-gray-500">
+              {homePage.paid}
+            </p>
           )}
         </div>
       </div>
@@ -104,7 +111,7 @@ export default function Home() {
   );
 
   const handleStartClick = () => {
-    navigate("/templates")
+    navigate("/templates");
   };
 
   return (
@@ -140,7 +147,7 @@ export default function Home() {
           </a>
         </p>
       </footer>
-      <Footer/>
+      <Footer />
     </div>
   );
 }

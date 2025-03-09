@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { loginPage } from "../../constants/commontext";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../redux/store";
-import { loginUser } from "../../redux/slices/authSlice";
 import { useNavigate } from "react-router-dom";
-import { register } from "../../services/authservices";
+import { register, login } from "../../services/authservices";
+import { ThreeDots } from "react-loader-spinner";
+import Cookie from "js-cookie";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -14,35 +13,40 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const dispatch: AppDispatch = useDispatch();
-
-  // Handle login request (send OTP)
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     if (!email) {
       setError("Email is required");
+      setLoading(false);
       return;
     }
-    const result = await register({ email });
-    console.log(result.data, "res");
-    if (result.status === 200) {
+    const { data } = await register({ email });
+    console.log("data", data);
+    if (data.token) {
+      Cookie.set("token", data.token, { expires: 1 });
+      navigate("/home");
+    }
+    if (data.status === 200) {
       setOtpSent(true);
     } else {
-      setError(result.data.message.message);
+      console.log("data", data);
+      setError(data.error || "Something went wrong");
     }
     setLoading(false);
   }
 
-  // Handle OTP verification
   async function handleOtpVerification(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    const result = await dispatch(loginUser({ email }));
-    if (result.payload.token) {
-      // navigate("/home", { replace: false });
+
+    const { data, status } = await login({ email, otp });
+    console.log("data", data);
+    if (status) {
+      Cookie.set("token", data.data.token, { expires: 1 });
+      navigate("/home", { replace: false });
     } else {
-      setError("Invalid OTP");
+      setError(data.error || "Invalid OTP");
     }
     setLoading(false);
   }
@@ -51,6 +55,14 @@ function Login() {
     setEmail(e.target.value);
     setError("");
   };
+
+  if (loading) {
+    return (
+      <div className="w-full h-screen flex flex-col justify-center items-center bg-red">
+        <ThreeDots color="#00BFFF" height={80} width={80} />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full h-screen flex flex-col justify-center items-center bg-green-100">
@@ -72,7 +84,7 @@ function Login() {
           placeholder="email"
           value={email}
           onChange={handleEmailChange}
-          disabled={otpSent} // Disable email input once OTP is sent
+          disabled={otpSent}
         />
 
         {otpSent && (
@@ -93,10 +105,7 @@ function Login() {
         )}
 
         {error && <div className="text-red-700 text-md mt-5">{error}</div>}
-        <button
-          className="bg-blue-500 text-white py-2 px-4 rounded mt-5 hover:bg-green-600 outline-none focus:outline-none focus:border-lime-400"
-          disabled={loading}
-        >
+        <button className="bg-blue-500 text-white py-2 px-4 rounded mt-5 hover:bg-green-600 outline-none focus:outline-none focus:border-lime-400">
           {otpSent ? "Verify OTP" : loginPage.button}
         </button>
       </form>

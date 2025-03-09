@@ -5,20 +5,22 @@ import { AppDispatch, RootState } from "../../redux/store";
 import { useNavigate } from "react-router-dom";
 import { resumesData } from "../../redux/slices/resumeSlice";
 import { deleteResume } from "../../services/templateServices";
+import Cookies from "js-cookie";
 
 function Templates() {
   const resumeData = useSelector((state: RootState) => state.resume.resumes);
-  const userData = useSelector((state: RootState) => state.auth);
   const dispath: AppDispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispath(resumesData(userData.token));
-  }, [userData.token]);
+    const token = Cookies.get("token") || "";
+    dispath(resumesData(token));
+  }, [dispath]);
 
   const handleDeleteResume = async (id: number) => {
     try {
-      const response = await deleteResume(userData.token, id);
+      const token: string = Cookies.get("token") || "";
+      const response = await deleteResume(token, id);
       if (!response.status) {
         alert(response.data.error);
       }
@@ -70,7 +72,9 @@ function Templates() {
                 </div>
 
                 <div className="mb-4">
-                  <h3 className="text-lg font-semibold mb-2">Experience</h3>
+                  {resume.experience.length > 0 && (
+                    <h3 className="text-lg font-semibold mb-2">Experience</h3>
+                  )}
                   {resume.experience.map((exp) => (
                     <div
                       key={exp.id}
@@ -129,6 +133,14 @@ function Templates() {
                   className="bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded text-sm"
                 >
                   View
+                </button>
+                <button
+                  onClick={() =>
+                    navigate(`/create-resume?id=${resume.id}&type=edit`)
+                  }
+                  className="bg-green-500 hover:bg-green-600 px-3 py-1 rounded text-sm ml-5"
+                >
+                  Edit
                 </button>
                 <button
                   onClick={() => handleDeleteResume(resume.id)}

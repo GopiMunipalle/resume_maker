@@ -4,7 +4,7 @@ export const signUpPage = {
   button: "Sign Up",
   link: "Already have an account? Sign In",
   signInButton: "Sign In",
-  linkTo: "/login",
+  linkTo: "/",
   username: "name",
   password: "Password",
   email: "Email",
