@@ -14,45 +14,12 @@ function Login() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-<<<<<<< Updated upstream
   const dispatch: AppDispatch = useDispatch();
-=======
-  async function handleLogin(e: React.FormEvent) {
-    e.preventDefault();
-    setLoading(true);
-    if (!email) {
-      setError("Email is required");
-      setLoading(false);
-      return;
-    }
-    const { data } = await register({ email });
-    console.log("data", data);
-    if (data.token) {
-      Cookie.set("token", data.token, { expires: 1 });
-      navigate("/home");
-    }
-    if (data.status) {
-      setOtpSent(true);
-    } else {
-      console.log("data", data);
-      setError(data.error || "Something went wrong");
-    }
-    setLoading(false);
-  }
->>>>>>> Stashed changes
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
-<<<<<<< Updated upstream
     const result = await dispatch(loginUser({ email, password })).unwrap();
     if (result.token) {
-=======
-    setLoading(true);
-
-    const { data, status } = await login({ email, otp });
-    if (status) {
-      Cookie.set("token", data.data.token, { expires: 1 });
->>>>>>> Stashed changes
       navigate("/home", { replace: false });
     } else {
       setError(result.error);
