@@ -27,7 +27,7 @@ export const register = async (userData: {
       body: JSON.stringify(userData),
     });
     const data = await response.json();
-    if (data.statusCode === 200 || data.statusCode === 201) {
+    if (response.ok) {
       return { data, status: true };
     }
     return data.message[0];

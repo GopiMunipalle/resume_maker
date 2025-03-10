@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import React from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "./redux/store";
@@ -19,6 +20,25 @@ export default function ProtectedRoutes({
   if (!allowedRoles.includes(role)) {
     return <Navigate to="/home" />; // Redirect if the user doesn't have the required role
   }
+=======
+import { Navigate } from "react-router-dom";
+import Cookies from "js-cookie";
+
+const ProtectedRoutes = ({
+  // allowedRoles,
+  Component,
+}: {
+  allowedRoles: string[];
+  Component: React.ComponentType;
+}) => {
+  const token = Cookies.get("token");
+  if (!token) {
+    return <Navigate to="/" />;
+  }
+
+  return <Component />;
+};
+>>>>>>> Stashed changes
 
   return <Component />;
 }
