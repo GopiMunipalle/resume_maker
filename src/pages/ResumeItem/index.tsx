@@ -89,15 +89,15 @@ function ResumeItem() {
 
     doc.setFontSize(12);
     doc.setFont("helvetica", "normal");
-    const contactInfo = `${resume?.user.email || ""} | ${resume?.user.number || ""} | ${resume?.user.githubUrl || ""}`;
-    doc.text(contactInfo, pageWidth / 2, y, { align: "center" });
+    doc.text(
+      `${resume?.user.email || ""} | ${resume?.user.number || ""} | ${
+        resume?.user.githubUrl || ""
+      } | ${resume?.user.linkedinUrl || ""}`,
+      pageWidth / 2,
+      y,
+      { align: "center" }
+    );
     y += 0.3;
-
-    const linkedInUrl = resume?.user.linkedinUrl || "";
-    if (linkedInUrl) {
-      doc.text(linkedInUrl, pageWidth / 2, y, { align: "center" });
-      y += 0.4;
-    }
 
     if (resume?.summary) {
       doc.setFont("helvetica", "bold");
@@ -200,10 +200,10 @@ function ResumeItem() {
             <p className="font-small border-r-2 pr-2 border-gray-400">
               {resume?.user.linkedinUrl}
             </p>
-          </div>
             <p className="font-small border-r-2 pr-2 border-gray-400">
               {resume?.user.githubUrl}
             </p>
+          </div>
         </div>
         <hr className="my-6 border-gray-400" />
         {resume?.summary && (
