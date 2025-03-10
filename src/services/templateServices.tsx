@@ -17,12 +17,13 @@ export const submitResumeData = async (
   education: Education[],
   awards: AwardsData[],
   ceritificates: CeritificatesData[],
-  userId: number,
-  token: string
+  token: string,
+  type: string,
+  resumeId?: number
 ) => {
   try {
     const response = await fetch(apiConfig.createResume, {
-      method: "POST",
+      method: type === "create" ? "POST" : "PUT",
       headers: { "Content-Type": "application/json", authorization: token },
       body: JSON.stringify({
         ...resume,
@@ -34,7 +35,7 @@ export const submitResumeData = async (
         resume: resume,
         awards: awards,
         certifications: ceritificates,
-        userId: userId,
+        resumeId: resumeId,
       }),
     });
     const result = await response.json();

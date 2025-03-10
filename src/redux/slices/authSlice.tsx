@@ -18,34 +18,33 @@ export interface AuthState {
   updatedAt: Date | null;
 }
 
-export const initialState: AuthState = {
-  id: null,
-  name: "",
-  email: "",
-  role: "",
-  token: "",
-  number: "",
-  linkedinUrl: "",
-  githubUrl: "",
-  profilePicture: "",
-  isLoggedIn: false,
+export interface authSliceState {
+  loading: boolean;
+  userInfo: any | null;
+  userToken: any | null;
+  error: null | any;
+  success: boolean;
+}
+
+export const initialState: authSliceState = {
+  loading: false,
+  userInfo: null,
+  userToken: null,
   error: null,
-  isLoading: false,
-  createdAt: null,
-  updatedAt: null,
+  success: false,
 };
 
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (
-    { email, password }: { email: string; password: string },
+    { email, otp }: { email: string; otp: string },
     { rejectWithValue }
   ) => {
     try {
       const response = await fetch(apiConfig.login, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, otp }),
       });
       const data = await response.json();
       if (response.ok) {
@@ -63,83 +62,40 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<AuthState>) => {
-      state.id = action.payload.id;
-      state.name = action.payload.name;
-      state.email = action.payload.email;
-      state.role = action.payload.role;
-      state.token = action.payload.token;
-      state.linkedinUrl = action.payload.linkedinUrl;
-      state.githubUrl = action.payload.githubUrl;
-      state.number = action.payload.number;
-      state.profilePicture = action.payload.profilePicture;
-      state.isLoggedIn = true;
-      state.createdAt = action.payload.createdAt;
-      state.updatedAt = action.payload.updatedAt;
-    },
     logout: (state) => {
-      state.id = null;
-      state.name = "";
-      state.email = "";
-      state.role = "";
-      state.token = "";
-      state.githubUrl = "";
-      (state.linkedinUrl = ""),
-        (state.number = ""),
-        (state.profilePicture = "");
-      state.isLoggedIn = false;
+      state.loading = false;
+      state.userInfo = null;
+      state.userToken = null;
       state.error = null;
-      state.isLoading = false;
-      state.createdAt = null;
-      state.updatedAt = null;
-      localStorage.clear();
+    },
+    setCredentials: (state, action) => {
+      const { userInfo } = action.payload;
+      state.userInfo = userInfo;
+      console.log("userInfo", userInfo);
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(loginUser.pending, (state) => {
-        state.isLoading = true;
+        state.loading = true;
         state.error = null;
       })
       .addCase(
         loginUser.fulfilled,
         (state, action: PayloadAction<AuthState>) => {
-          const {
-            id,
-            name,
-            email,
-            role,
-            token,
-            createdAt,
-            updatedAt,
-            number,
-            linkedinUrl,
-            githubUrl,
-            profilePicture,
-          } = action.payload;
-          state.id = id;
-          state.name = name;
-          state.email = email;
-          state.role = role;
-          state.token = token;
-          state.number = number;
-          state.linkedinUrl = linkedinUrl;
-          state.githubUrl = githubUrl;
-          state.profilePicture = profilePicture;
-          state.isLoggedIn = true;
-          state.isLoading = false;
-          state.error = null;
-          state.createdAt = createdAt;
-          state.updatedAt = updatedAt;
+          const { payload } = action;
+          state.loading = false;
+          state.userInfo = payload;
+          state.userToken = payload.token;
         }
       )
       .addCase(loginUser.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload as string;
+        state.loading = false;
+        state.error = String(action.payload);
       });
   },
 });
 
-export const { logout, setUser } = authSlice.actions;
+export const { logout, setCredentials } = authSlice.actions;
 
 export default authSlice.reducer;
