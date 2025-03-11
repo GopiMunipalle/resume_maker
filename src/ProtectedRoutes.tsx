@@ -1,12 +1,22 @@
-import { Navigate, Route } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
-const ProtectedRoutes = (props: any) => {
+interface ProtectedRoutesProps {
+  allowedRoles: string[];
+  Component: React.ElementType;
+}
+
+const ProtectedRoutes: React.FC<ProtectedRoutesProps> = ({
+  allowedRoles,
+  Component,
+}) => {
   const token = Cookies.get("token");
+
   if (!token) {
     return <Navigate to="/" />;
   }
-  return <Route {...props} />;
+
+  return <Component />;
 };
 
 export default ProtectedRoutes;
