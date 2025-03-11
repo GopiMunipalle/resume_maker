@@ -7,7 +7,7 @@ interface ProtectedRoutesProps {
 }
 
 const ProtectedRoutes: React.FC<ProtectedRoutesProps> = ({
-  allowedRoles,
+  // allowedRoles,
   Component,
 }) => {
   const token = Cookies.get("token");
