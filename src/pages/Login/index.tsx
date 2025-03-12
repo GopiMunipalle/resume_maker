@@ -22,7 +22,6 @@ function Login() {
       return;
     }
     const { data } = await register({ email });
-    console.log("data", data);
     if (data.token) {
       Cookie.set("token", data.token, { expires: 1 });
       navigate("/home");
@@ -30,7 +29,6 @@ function Login() {
     if (data.status === 200) {
       setOtpSent(true);
     } else {
-      console.log("data", data);
       setError(data.error || "Something went wrong");
     }
     setLoading(false);
@@ -40,11 +38,10 @@ function Login() {
     e.preventDefault();
     setLoading(true);
 
-    const { data, status } = await login({ email, otp });
-    console.log("data", data);
-    if (status) {
+    const { data } = await login({ email, otp });
+    if (data.data.token) {
       Cookie.set("token", data.data.token, { expires: 1 });
-      navigate("/home", { replace: false });
+      navigate("/home", { replace: true });
     } else {
       setError(data.error || "Invalid OTP");
     }

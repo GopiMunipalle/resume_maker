@@ -7,7 +7,6 @@ import Footer from "../../components/Footer";
 
 export default function Home() {
   const navigate = useNavigate();
-  const [isMouseEnter, setIsMouseEnter] = useState(false);
   const [isMouseEnterTwo, setIsMouseEnterTwo] = useState(false);
 
   const KeyFeatures = () => (
@@ -56,8 +55,6 @@ export default function Home() {
         </div>
         <div
           className="template w-64 p-4 border rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300"
-          onMouseEnter={() => setIsMouseEnter(true)}
-          onMouseLeave={() => setIsMouseEnter(false)}
           onClick={() => navigate("/templates")}
         >
           <img
@@ -66,11 +63,6 @@ export default function Home() {
             className="w-full h-40 object-cover rounded-md mb-4 hover:scale-105 transition-transform duration-300 ease-in-out"
           />
           <p className="text-center">Minimalist Style</p>
-          {isMouseEnter && (
-            <p className="text-center text-sm italic text-gray-500">
-              {homePage.paid}
-            </p>
-          )}
         </div>
         <div
           className="template w-64 p-4 border rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300"
